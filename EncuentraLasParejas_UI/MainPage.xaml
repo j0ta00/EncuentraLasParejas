@@ -4,32 +4,22 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:EncuentraLasParejas_UI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:vm="using:EncuentraLasParejas_UI.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    <Page.DataContext>
-        <vm:ViewModelPartida/>
-    </Page.DataContext>
     <RelativePanel>
-        <TextBlock x:Name="txtIntentos" Margin="40,20,0,0">
-            <Run Text="Intentos Restantes:"></Run>
-            <Run Text="{Binding Intentos}"></Run>
+        <RelativePanel.Background>
+            <ImageBrush ImageSource="/Assets/ImagenesDeFondo/Fondo.jpg"></ImageBrush>
+        </RelativePanel.Background>
+        <StackPanel Padding="40" CornerRadius="10" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True">
+            <StackPanel.Background>
+                <SolidColorBrush Color="Green" Opacity="0.4"></SolidColorBrush>
+            </StackPanel.Background>
+            <TextBlock FontWeight="Bold" FontSize="25" Foreground="White">
+            ENCUENTRA LAS PAREJAS
         </TextBlock>
-        <TextBlock x:Name="txtPuntuacion" Margin="40,20,0,0" RelativePanel.RightOf="txtIntentos">
-            <Run Text="Parejas acertadas:"></Run>
-            <Run Text="{Binding Puntuacion}"></Run>
-        </TextBlock>
-        <GridView ItemsSource="{Binding ListaCartas}" IsItemClickEnabled="True" SelectedItem="{Binding CartaSeleccionada,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True">
-            <GridView.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Margin="30">
-                        <Image Source="{Binding Imagen}" Width="100" Height="100"></Image>
-                        <!--<Image Source="/Assets/ImagenesDeLasCartas/cartaPorDetras.png"  Width="100" Height="100"></Image>-->
-                    </StackPanel>
-                </DataTemplate>
-            </GridView.ItemTemplate>
-        </GridView>
-        <!--<Image Source="/Assets/ImagenesDeLasCartas/cartaPorDetras.png"  Width="100" Height="100" RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True"></Image>-->
+            <Image Source="/Assets/ImagenesDeFondo/cartasYFichas.png" Width="140" Margin="0,20,0,20"></Image>
+            <Button HorizontalAlignment="Center" Click="Button_Click" Background="Black" CornerRadius="5" FontSize="20" Foreground="white" FontWeight="SemiBold">JUGAR</Button>
+        </StackPanel>
     </RelativePanel>
 </Page>

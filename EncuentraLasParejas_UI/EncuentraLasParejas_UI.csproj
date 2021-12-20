@@ -124,6 +124,9 @@
     </Compile>
     <Compile Include="Models\Carta.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tablero.xaml.cs">
+      <DependentUpon>Tablero.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\Utils\clsVMBase .cs" />
     <Compile Include="ViewModels\Utils\DelegateCommand .cs" />
     <Compile Include="ViewModels\ViewModelPartida.cs" />
@@ -135,16 +138,18 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\cartaPorDetras.png" />
-    <Content Include="Assets\ImagenesDeLasCartas\cSharp.png" />
+    <Content Include="Assets\ImagenesDeFondo\cartasYFichas.png" />
+    <Content Include="Assets\ImagenesDeFondo\Fondo.jpg" />
+    <Content Include="Assets\ImagenesDeLasCartas\Cobol.png" />
     <Content Include="Assets\ImagenesDeLasCartas\c++.png" />
     <Content Include="Assets\ImagenesDeLasCartas\c.png" />
     <Content Include="Assets\ImagenesDeLasCartas\cartaPorDetras.png" />
+    <Content Include="Assets\ImagenesDeLasCartas\cSharp.png" />
     <Content Include="Assets\ImagenesDeLasCartas\delphi.png" />
     <Content Include="Assets\ImagenesDeLasCartas\java.png" />
     <Content Include="Assets\ImagenesDeLasCartas\javaScript.png" />
     <Content Include="Assets\ImagenesDeLasCartas\perl.png" />
-    <Content Include="Assets\ImagenesDeLasCartas\php.png" />
-    <Content Include="Assets\ImagenesDeLasCartas\visualBasic.png" />
+    <Content Include="Assets\ImagenesDeLasCartas\php.jpg" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -162,6 +167,10 @@
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Tablero.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

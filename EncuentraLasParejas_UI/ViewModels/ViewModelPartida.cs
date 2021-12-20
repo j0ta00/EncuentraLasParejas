@@ -8,30 +8,37 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace EncuentraLasParejas_UI.ViewModels
 {
     public class ViewModelPartida : clsVMBase
     {
+        private int tiempo;
+        private DispatcherTimer Timer = new DispatcherTimer();
         public ObservableCollection<Carta> ListaCartas { get; set; }
         public DelegateCommand Clicar { get; set; }
         private int numeroCartasVolteadas;//esto es un booleano pero no se me ocurria ningun nombre de booleano logico
         private Carta cartaSeleccionada;
-        public Carta CartaSeleccionada { get { return cartaSeleccionada; } set {
+        public string Tiempo { get; set; }
+    public Carta CartaSeleccionada { get { return cartaSeleccionada; } set {
                 if (numeroCartasVolteadas == 1) {
                     CartaPrevia = cartaSeleccionada;
-                }
+                }                
                 cartaSeleccionada = value;
-                cartaSeleccionada.Descubierta = true;
-                Clicar.Execute(Clicar);
+                if (!(cartaSeleccionada is null))
+                {
+                    Clicar.Execute(Clicar);
+                }
             } }
         private Carta CartaPrevia { get; set; }
         private int puntuacion, intentos;
         public int Puntuacion {
             get { return puntuacion; }
             set {
-                if (puntuacion > 5)
+                if (puntuacion > 7)
                 {
                     imprimirResultado(true);
                 }
@@ -43,13 +50,11 @@ namespace EncuentraLasParejas_UI.ViewModels
         public int Intentos {
             get { return intentos; }
             set {
-                if (intentos == 0)
+                if (intentos == 1)
                 {
                     imprimirResultado(false);
                 }
-                else {
                     intentos = value;
-                }
             }
         }
         public ViewModelPartida() {
@@ -57,27 +62,39 @@ namespace EncuentraLasParejas_UI.ViewModels
             intentos = 6;
             numeroCartasVolteadas = 0;
             llenarListaDeCartas();
-            Clicar = new DelegateCommand(ClicarEnCarta_Execute);
-        }
-
-
+            Tiempo = "0";
+            Timer.Interval = new TimeSpan(0, 0, 1);
+            Timer.Tick += (a,b)=> {
+                tiempo++;
+                TimeSpan tiempoConvertido = TimeSpan.FromSeconds(tiempo);
+                Tiempo = tiempoConvertido.ToString("hh':'mm':'ss");
+                NotifyPropertyChanged("Tiempo");
+            };
+            Timer.Start();
+            Clicar = new DelegateCommand(clicarEnCarta_Execute);           
+        }       
         private void comprobarCartas() {
             if (CartaSeleccionada.Id == CartaPrevia.Id)
-                {
+                {               
                     Puntuacion++;
                     NotifyPropertyChanged("Puntuacion");
                 }
                 else {
                     Intentos--;
-                    CartaSeleccionada.Descubierta = false;
-                    CartaPrevia.Descubierta = false;
+                    esperarYDarLaVuelta();
                     NotifyPropertyChanged("Intentos");
             }   
         }
+        private async void esperarYDarLaVuelta(){
+            await Task.Delay(500);
+            CartaSeleccionada.Descubierta = false;
+            CartaPrevia.Descubierta = false;
+        } 
+
         public void llenarListaDeCartas() {
             Carta carta;
             ListaCartas = new ObservableCollection<Carta>();
-            string[] nombreImagenesCartas = Directory.GetFiles("./Assets/ImagenesDeLasCartas/");
+            string[] nombreImagenesCartas = Directory.GetFiles("./Assets/ImagenesDeLasCartas/").Where(nombreFichero=> nombreFichero != "./Assets/ImagenesDeLasCartas/cartaPorDetras.png").ToArray();
             for (int i = 0; i < 9; i++) {
                 carta = new Carta(i, false, nombreImagenesCartas[i].Remove(0, 1));
                 ListaCartas.Add(carta);
@@ -89,26 +106,32 @@ namespace EncuentraLasParejas_UI.ViewModels
 
         private void barajarCartas(){
             var rand = new Random();
-            ListaCartas = new ObservableCollection<Carta>(ListaCartas.Select(x => new { X = x, R = rand.Next() })
+            ListaCartas = new ObservableCollection<Carta>(ListaCartas.Select(carta => new { Carta = carta, R = rand.Next() })
                  .OrderBy(x => x.R)
-                 .Select(x => x.X)
+                 .Select(x => x.Carta)
                  .ToList());
         }
-        public void ClicarEnCarta_Execute() {
-            if (numeroCartasVolteadas == 1)
+        private void clicarEnCarta_Execute() {
+            if (!cartaSeleccionada.Descubierta)
             {
-                comprobarCartas();
-                numeroCartasVolteadas = 0;
+                cartaSeleccionada.Descubierta = true;
+                if (numeroCartasVolteadas == 1)
+                {
+                    comprobarCartas();
+                    numeroCartasVolteadas = 0;
+                }
+                else { ++numeroCartasVolteadas; }
             }
-            else { ++numeroCartasVolteadas; }
         }
-
+        //private bool clicarEnCarta_CanExecute(){
+        //    return !(CartaSeleccionada is null);       
+        //}
         private async void imprimirResultado(bool resultado) {
-            ContentDialogResult resultadoContentDialog;
-            ContentDialog resultadoDialog = null;
+            ContentDialog resultadoDialog;
             if (resultado) {
                 resultadoDialog = new ContentDialog() {
                     Title = "Victory!",
+                    CloseButtonText = "Exit",
                     PrimaryButtonText = "Play again!"
             };
             } else {
@@ -118,26 +141,30 @@ namespace EncuentraLasParejas_UI.ViewModels
                     Content = "Try again!",
                     CloseButtonText = "Exit",
                     PrimaryButtonText = "Try again!"
-
                 };
-
             }
             SalirOJugarDeNuevo(await resultadoDialog.ShowAsync());
         }
         private void SalirOJugarDeNuevo(ContentDialogResult resultado){
+            Frame rootFrame = null;
             if (resultado == ContentDialogResult.Primary)
             {
                 volverAJugar();
             }
             else {
-                
+                rootFrame = Window.Current.Content as Frame;
+                rootFrame.Navigate(typeof(MainPage));
             }
         }
 
         private void volverAJugar(){
             this.Puntuacion=0;
             this.Intentos=6;
+            numeroCartasVolteadas = 0;
             ListaCartas.ToList().ForEach(carta=>carta.Descubierta=false);
+            tiempo=0;
+            barajarCartas();
+            NotifyPropertyChanged("Tiempo");
             NotifyPropertyChanged("ListaCartas");
             NotifyPropertyChanged("Puntuacion");
             NotifyPropertyChanged("Intentos");

@@ -35,6 +35,12 @@ namespace EncuentraLasParejas.Models
             Descubierta = descubierta;
             this.UbicacionImagen = ubicacionImagen;
         }
+        public Carta()
+        {
+            Id = 0;
+            Descubierta = true;
+            this.UbicacionImagen = "";
+        }
         public Carta(Carta carta)
         {
             Id=carta.Id;
