@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EncuentraLasParejas.Models
@@ -25,7 +26,7 @@ namespace EncuentraLasParejas.Models
             }
         }
         public string UbicacionImagen;
-        public string Imagen;
+        public string Imagen {get; set;}
         #endregion
         #region Constructores
         public Carta(int id, bool descubierta, string ubicacionImagen)
@@ -36,7 +37,7 @@ namespace EncuentraLasParejas.Models
         }
         public Carta(Carta carta)
         {
-            Id=++carta.Id;
+            Id=carta.Id;
             Descubierta= carta.Descubierta;
             UbicacionImagen= carta.UbicacionImagen;
         }
