@@ -130,14 +130,14 @@ namespace EncuentraLasParejas_UI.ViewModels
             ContentDialog resultadoDialog;
             if (resultado) {
                 resultadoDialog = new ContentDialog() {
-                    Title = "Victory!",
+                    Title = "Victory! :D",
                     CloseButtonText = "Exit",
                     PrimaryButtonText = "Play again!"
             };
             } else {
                 resultadoDialog = new ContentDialog()
                 {
-                    Title = "You Loose :(",
+                    Title = "You Lose :(",
                     Content = "Try again!",
                     CloseButtonText = "Exit",
                     PrimaryButtonText = "Try again!"
