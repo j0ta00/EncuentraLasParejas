@@ -1,4 +1,6 @@
 ﻿using EncuentraLasParejas.Models;
+using EncuentraLasParejas_BL.Gestora;
+using EncuentraLasParejas_Entities;
 using EncuentraLasParejas_UI.ViewModels.Utils;
 using System;
 using System.Collections.Generic;
@@ -38,23 +40,21 @@ namespace EncuentraLasParejas_UI.ViewModels
         public int Puntuacion {
             get { return puntuacion; }
             set {
-                if (puntuacion > 7)
+                puntuacion = value;
+                if (puntuacion > 8)
                 {
                     imprimirResultado(true);
-                }
-                else {
-                    puntuacion = value;
-                }
+                }                
             }
         }
         public int Intentos {
             get { return intentos; }
             set {
-                if (intentos == 1)
+                intentos = value;
+                if (intentos ==  -1000)
                 {
                     imprimirResultado(false);
-                }
-                    intentos = value;
+                }                   
             }
         }
         public ViewModelPartida() {
@@ -127,24 +127,50 @@ namespace EncuentraLasParejas_UI.ViewModels
         //    return !(CartaSeleccionada is null);       
         //}
         private async void imprimirResultado(bool resultado) {
-            ContentDialog resultadoDialog;
+            ContentDialog dialog;
+            ContentDialogResult resultadoDialog;
+            string nombreJugador="";
+            Timer.Stop();
             if (resultado) {
-                resultadoDialog = new ContentDialog() {
+                dialog = new ContentDialog() {
                     Title = "Victory! :D",
                     CloseButtonText = "Exit",
-                    PrimaryButtonText = "Play again!"
+                    Content = new TextBox() {
+                        AcceptsReturn = false,
+                        Width = 300,
+                        MaxLength = 15
+                    },
+                    PrimaryButtonText = "Play again!",
+                    SecondaryButtonText="Save Score"
             };
+                while ((resultadoDialog = await dialog.ShowAsync()) == ContentDialogResult.Secondary)
+                {
+                    nombreJugador = (dialog.Content as TextBox).Text;
+                    if (string.IsNullOrEmpty(nombreJugador))
+                    {
+                        nombreJugador = "Guess";
+                    }
+                    guardarResultado(nombreJugador);
+                    dialog.Content = new TextBox().Text = "Score saved!";
+                    dialog.IsSecondaryButtonEnabled = false;
+                }
             } else {
-                resultadoDialog = new ContentDialog()
+                    dialog = new ContentDialog()
                 {
                     Title = "You Lose :(",
                     Content = "Try again!",
                     CloseButtonText = "Exit",
                     PrimaryButtonText = "Try again!"
                 };
+                resultadoDialog = await dialog.ShowAsync();
             }
-            SalirOJugarDeNuevo(await resultadoDialog.ShowAsync());
+            SalirOJugarDeNuevo(resultadoDialog);
         }
+
+        private void guardarResultado(string nombreJugador){
+            GestoraPuntuacion_BL.actualizarOInsertar(new clsPuntuacion(nombreJugador,Tiempo));
+        }
+
         private void SalirOJugarDeNuevo(ContentDialogResult resultado){
             Frame rootFrame = null;
             if (resultado == ContentDialogResult.Primary)

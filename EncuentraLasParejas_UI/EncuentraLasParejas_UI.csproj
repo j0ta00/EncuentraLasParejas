@@ -129,6 +129,7 @@
     </Compile>
     <Compile Include="ViewModels\Utils\clsVMBase .cs" />
     <Compile Include="ViewModels\Utils\DelegateCommand .cs" />
+    <Compile Include="ViewModels\ViewModelMainPage.cs" />
     <Compile Include="ViewModels\ViewModelPartida.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -177,6 +178,16 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.12</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EncuentraLasParejas_BL\EncuentraLasParejas_BL.csproj">
+      <Project>{ABC88523-E59F-4F41-B85F-3724B34A450B}</Project>
+      <Name>EncuentraLasParejas_BL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EncuentraLasParejas_Entities\EncuentraLasParejas_Entities.csproj">
+      <Project>{11B29373-39FF-426F-B5FF-91A88E5E58AD}</Project>
+      <Name>EncuentraLasParejas_Entities</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

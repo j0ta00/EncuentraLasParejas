@@ -48,5 +48,8 @@ namespace EncuentraLasParejas.Models
             UbicacionImagen= carta.UbicacionImagen;
         }
         #endregion
+
+        
+
     }
 }
