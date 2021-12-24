@@ -13,8 +13,8 @@
     </Page.DataContext>
     <Page.Resources>
         <DataTemplate x:Key="scoreBoard">
-            <StackPanel Orientation="Horizontal" Margin="30">
-                <TextBlock Width="250" Foreground="White" FontSize="20">
+            <StackPanel  Orientation="Horizontal" Margin="30">
+                <TextBlock Width="270" Foreground="White" FontSize="20">
                         <Run FontWeight="SemiBold" Text="Name: "></Run>
                         <Run Text="{Binding NombreJugador}"></Run>
                 </TextBlock>

@@ -22,13 +22,15 @@ namespace EncuentraLasParejas_UI.ViewModels
         private DispatcherTimer Timer = new DispatcherTimer();
         public ObservableCollection<Carta> ListaCartas { get; set; }
         public DelegateCommand Clicar { get; set; }
+        public DelegateCommand VolverAEmpezar { get; set; }
+        public DelegateCommand VolverAMenu { get; set; }
         private int numeroCartasVolteadas;//esto es un booleano pero no se me ocurria ningun nombre de booleano logico
         private Carta cartaSeleccionada;
         public string Tiempo { get; set; }
-    public Carta CartaSeleccionada { get { return cartaSeleccionada; } set {
+        public Carta CartaSeleccionada { get { return cartaSeleccionada; } set {
                 if (numeroCartasVolteadas == 1) {
                     CartaPrevia = cartaSeleccionada;
-                }                
+                }
                 cartaSeleccionada = value;
                 if (!(cartaSeleccionada is null))
                 {
@@ -44,17 +46,17 @@ namespace EncuentraLasParejas_UI.ViewModels
                 if (puntuacion > 8)
                 {
                     imprimirResultado(true);
-                }                
+                }
             }
         }
         public int Intentos {
             get { return intentos; }
             set {
                 intentos = value;
-                if (intentos ==  -1000)
+                if (intentos == -1000)
                 {
                     imprimirResultado(false);
-                }                   
+                }
             }
         }
         public ViewModelPartida() {
@@ -64,15 +66,24 @@ namespace EncuentraLasParejas_UI.ViewModels
             llenarListaDeCartas();
             Tiempo = "0";
             Timer.Interval = new TimeSpan(0, 0, 1);
-            Timer.Tick += (a,b)=> {
+            Timer.Tick += (a, b) => {
                 tiempo++;
                 TimeSpan tiempoConvertido = TimeSpan.FromSeconds(tiempo);
                 Tiempo = tiempoConvertido.ToString("hh':'mm':'ss");
                 NotifyPropertyChanged("Tiempo");
             };
+            VolverAMenu = new DelegateCommand(volverAlMenu);
+            VolverAEmpezar = new DelegateCommand(jugarDeNuevo);
             Timer.Start();
-            Clicar = new DelegateCommand(clicarEnCarta_Execute);           
-        }       
+            Clicar = new DelegateCommand(clicarEnCarta_Execute);
+        }
+        private void jugarDeNuevo(){
+            SalirOJugarDeNuevo(ContentDialogResult.Primary);
+        }
+        private void volverAlMenu(){
+
+            SalirOJugarDeNuevo(ContentDialogResult.None);
+        }
         private void comprobarCartas() {
             if (CartaSeleccionada.Id == CartaPrevia.Id)
                 {               
@@ -188,6 +199,7 @@ namespace EncuentraLasParejas_UI.ViewModels
             this.Intentos=6;
             numeroCartasVolteadas = 0;
             ListaCartas.ToList().ForEach(carta=>carta.Descubierta=false);
+            Timer.Start();
             tiempo=0;
             barajarCartas();
             NotifyPropertyChanged("Tiempo");
