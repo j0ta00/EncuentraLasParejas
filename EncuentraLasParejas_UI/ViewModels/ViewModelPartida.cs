@@ -147,6 +147,7 @@ namespace EncuentraLasParejas_UI.ViewModels
                     Title = "Victory! :D",
                     CloseButtonText = "Exit",
                     Content = new TextBox() {
+                        PlaceholderText="INTRODUCE YOUR NAME",
                         AcceptsReturn = false,
                         Width = 300,
                         MaxLength = 15

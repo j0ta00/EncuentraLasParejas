@@ -20,9 +20,5 @@ namespace EncuentraLasParejas_Entities
             this.NombreJugador = "Guess";
             Tiempo = "0";
         }
-        //public override string ToString()
-        //{
-        //    return $"Nombre: {NombreJugador}         Tiempo: {Tiempo}";
-        //}
     }
 }
