@@ -28,6 +28,10 @@ namespace EncuentraLasParejas_UI.ViewModels
         private Carta cartaSeleccionada;
         public string Tiempo { get; set; }
         public Carta CartaSeleccionada { get { return cartaSeleccionada; } set {
+                if (CartaPrevia != null && CartaSeleccionada != null && (CartaSeleccionada.Descubierta || CartaPrevia.Descubierta)){//Con esta línea me aseguro que si el jugador es más rapido clicando que los 500 milisegundo de espera
+                    CartaSeleccionada.Descubierta = false;                                                                          // aun así las cartas se volteen, esto se debe a que el task.delay no duerme el hilo principal por lo que
+                    CartaPrevia.Descubierta = false;                                                                                // el jugador puede seguir clicando, me parecia lo óptimo ya que  optar por dormir el hilo principal queda bastante abrupto y obligas a estar esperando al jugador aunque sean milesimas
+                }
                 if (numeroCartasVolteadas == 1) {
                     CartaPrevia = cartaSeleccionada;
                 }
