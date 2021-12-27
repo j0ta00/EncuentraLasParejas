@@ -1,14 +1,13 @@
-﻿using EncuentraLasParejas_UI.ViewModels.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace EncuentraLasParejas_UI.Models
+namespace EncuentraLasParejas_UI_ASP.Models
 {
-    public class Carta:clsVMBase
+    public class Carta
     {
         #region propiedades autoimplementadas
         public int Id;
@@ -22,7 +21,6 @@ namespace EncuentraLasParejas_UI.Models
                 }else{
                     Imagen = cartaPorDetras;
                 }
-                NotifyPropertyChanged("Imagen");
             }
         }
         public string UbicacionImagen;

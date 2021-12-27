@@ -1,0 +1,22 @@
+﻿@model EncuentaLasParejas_UI_ASP.ViewModels.ViewModelPartida
+@using EncuentraLasParejas_UI_ASP.Models
+@{
+    ViewData["Title"] = "Index";
+}
+
+<html>
+<body>
+    @{int numeroCartas = int.Parse(ViewData["numeroCartas"].ToString());
+        ++numeroCartas;}
+    <form method="post">
+        @for (int i = 1; i < (Model.ListaCartasOptimizadas.Count+1); i++)
+        {
+            <button type="submit" name="id" value="@i">
+                <img src="@Model.ListaCartasOptimizadas[i-1]" width="180" height="250" />
+            </button>
+        }
+        <input type="hidden" value="@numeroCartas" />
+    </form>
+</body>
+</html>
+

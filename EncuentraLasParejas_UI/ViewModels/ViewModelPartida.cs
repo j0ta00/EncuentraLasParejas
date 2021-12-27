@@ -1,6 +1,6 @@
-﻿using EncuentraLasParejas.Models;
-using EncuentraLasParejas_BL.Gestora;
+﻿using EncuentraLasParejas_BL.Gestora;
 using EncuentraLasParejas_Entities;
+using EncuentraLasParejas_UI.Models;
 using EncuentraLasParejas_UI.ViewModels.Utils;
 using System;
 using System.Collections.Generic;
@@ -106,7 +106,7 @@ namespace EncuentraLasParejas_UI.ViewModels
             CartaPrevia.Descubierta = false;
         } 
 
-        public void llenarListaDeCartas() {
+        private void llenarListaDeCartas() {
             Carta carta;
             ListaCartas = new ObservableCollection<Carta>();
             string[] nombreImagenesCartas = Directory.GetFiles("./Assets/ImagenesDeLasCartas/").Where(nombreFichero=> nombreFichero != "./Assets/ImagenesDeLasCartas/cartaPorDetras.png").ToArray();
