@@ -12,10 +12,10 @@ namespace EncuentaLasParejas_UI_ASP.Controllers
     {
         [HttpGet]
         [HttpPost]
-        public IActionResult Index(int posicion,int numeroCartas)
+        public IActionResult Index(int posicion)
         {
             ViewModels.ViewModelPartida vm = new ViewModels.ViewModelPartida();
-            Carta carta=null;
+            Carta carta = null;
             if (posicion != 0)
             {
                 for (int i = 0; i < vm.ListaCartas.Count(); i++)
@@ -25,21 +25,33 @@ namespace EncuentaLasParejas_UI_ASP.Controllers
                         (carta = vm.ListaCartas[i]).Descubierta = true;
                     }
                 }
-                if (numeroCartas == 0)
-                {                   
+                if (!ViewModels.ViewModelPartida.ParejaVolteada)
+                {
                     ViewModels.ViewModelPartida.IdCartaPrevia = carta.Id;
-                    numeroCartas++;
+                    ViewModels.ViewModelPartida.ParejaVolteada = true;
                 }
                 else {
-                    numeroCartas=0;
-                    if (ViewModels.ViewModelPartida.IdCartaPrevia == carta.Id){
-                        
+                    ViewModels.ViewModelPartida.ParejaVolteada = false;
+                    if (ViewModels.ViewModelPartida.IdCartaPrevia == carta.Id)
+                    {
+                        ViewModels.ViewModelPartida.Puntuacion++;
+
+                    }
+                    else {
+                        ViewModels.ViewModelPartida.Intentos--;
                     }
                 }
-                
             }
             vm.llenarListaDeCartasOptimizadas();
             return View(vm);
+        }
+
+        private void inicializarPunutacionEIntentos()
+        {
+            if (ViewModels.ViewModelPartida.Intentos == 0 || ViewModels.ViewModelPartida.Puntuacion == 9){
+                ViewModels.ViewModelPartida.Intentos =6;
+                ViewModels.ViewModelPartida.Puntuacion =0;
+            }
         }
     }
 }

@@ -10,9 +10,23 @@ namespace EncuentaLasParejas_UI_ASP.ViewModels
 {
     public class ViewModelPartida
     {
-        public List<Carta> ListaCartas { get; set; }
+        private static int puntuacion, intentos;
+        public List<Carta> ListaCartas { get; set; }        
+        private static List<int> numerosRandom;
         public static int IdCartaPrevia{ get; set; }
-        public static int Intentos { get; set; }
+        public static int Intentos { get { return intentos; } set {
+                intentos = value;
+                if (intentos < 0){ 
+                
+                }
+            } }
+        public static int Puntuacion { get { return puntuacion; } set {
+                puntuacion = value;
+                if (puntuacion > 8){
+                
+                }
+            } }
+        public static bool ParejaVolteada { get; set; }
         public List<CartaImagenId> ListaCartasOptimizadas { get; set; }
         public ViewModelPartida(){
             llenarListaDeCartas();
@@ -31,17 +45,30 @@ namespace EncuentaLasParejas_UI_ASP.ViewModels
                 ListaCartas.Add(carta);
                 ListaCartas.Add(new Carta(carta));
             }
-            barajarCartas();
+                barajarCartas();
+        }
+  
+        public void barajarCartas()
+        {
+            Random rand = new Random();
+            int n = ListaCartas.Count,k;
+            Carta value;
+            while (n > 1)
+            {               
+                n--;
+                if (numerosRandom is null)
+                {
+                    numerosRandom = new List<int>(new int[18]);
+                    numerosRandom.Insert(n,rand.Next(n + 1));
+                }
+                k = numerosRandom[n];
+                value = ListaCartas[k];
+                ListaCartas[k] = ListaCartas[n];
+                ListaCartas[n] = value;
+            }
         }
 
-        private void barajarCartas()
-        {
-            var rand = new Random();
-            ListaCartas = new List<Carta>(ListaCartas.Select(carta => new { Carta = carta, R = rand.Next() })
-                 .OrderBy(x => x.R)
-                 .Select(x => x.Carta)
-                 .ToList());
-        }
+
 
         public void llenarListaDeCartasOptimizadas(){
             ListaCartasOptimizadas = new List<CartaImagenId>();
