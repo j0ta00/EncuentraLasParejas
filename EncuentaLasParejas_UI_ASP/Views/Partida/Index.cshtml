@@ -12,8 +12,8 @@
     <form method="post">
         @for (int posicion = 1; posicion < (Model.ListaCartasOptimizadas.Count + 1); posicion++)
         {
-            <button type="submit" name="posicion" value="@posicion">
-                <img src="@Model.ListaCartasOptimizadas[posicion-1].Imagen" width="180" height="250" />
+            <button type="submit" name="posicion" value="@posicion" style="margin:15px;border:0px">
+                <img src="@Model.ListaCartasOptimizadas[posicion-1].Imagen" width="120" height="180"/>
             </button>
         }
     </form>

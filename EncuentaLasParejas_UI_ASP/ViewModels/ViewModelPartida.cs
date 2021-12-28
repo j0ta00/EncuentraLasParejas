@@ -12,7 +12,7 @@ namespace EncuentaLasParejas_UI_ASP.ViewModels
     {
         private static int puntuacion, intentos;
         public List<Carta> ListaCartas { get; set; }        
-        private static List<int> numerosRandom;
+        private static int[] numerosRandom;
         public static int IdCartaPrevia{ get; set; }
         public static int Intentos { get { return intentos; } set {
                 intentos = value;
@@ -51,20 +51,17 @@ namespace EncuentaLasParejas_UI_ASP.ViewModels
         public void barajarCartas()
         {
             Random rand = new Random();
-            int n = ListaCartas.Count,k;
             Carta value;
-            while (n > 1)
+            for (int i=ListaCartas.Count-1; i > 1;i--)
             {               
-                n--;
                 if (numerosRandom is null)
                 {
-                    numerosRandom = new List<int>(new int[18]);
-                    numerosRandom.Insert(n,rand.Next(n + 1));
+                    numerosRandom = new int[18];
+                    numerosRandom[i]=rand.Next(i + 1);
                 }
-                k = numerosRandom[n];
-                value = ListaCartas[k];
-                ListaCartas[k] = ListaCartas[n];
-                ListaCartas[n] = value;
+                value = ListaCartas[numerosRandom[i]];
+                ListaCartas[numerosRandom[i]] = ListaCartas[i];
+                ListaCartas[i] = value;
             }
         }
 

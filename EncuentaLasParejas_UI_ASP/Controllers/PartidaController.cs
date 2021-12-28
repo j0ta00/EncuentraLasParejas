@@ -38,6 +38,8 @@ namespace EncuentaLasParejas_UI_ASP.Controllers
 
                     }
                     else {
+                        carta.Descubierta = false;
+                        vm.ListaCartas.Find(carta=>carta.Id== ViewModels.ViewModelPartida.IdCartaPrevia).Descubierta=false;
                         ViewModels.ViewModelPartida.Intentos--;
                     }
                 }
