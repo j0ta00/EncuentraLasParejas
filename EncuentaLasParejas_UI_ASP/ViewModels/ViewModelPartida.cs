@@ -11,25 +11,39 @@ namespace EncuentaLasParejas_UI_ASP.ViewModels
     public class ViewModelPartida
     {
         private static int puntuacion, intentos;
-        public List<Carta> ListaCartas { get; set; }        
-        private static int[] numerosRandom;
+        public static bool ResultadoComprobado { get; set; }
+        public static bool VoltearCartas { get; set; }
+        public static int Resultado { get; set; }
+        public static int Tiempo { get; set; }
+        public static List<Carta> ListaCartas { get; set; }        
         public static int IdCartaPrevia{ get; set; }
+        public static int IdCartaActual { get; set; }
         public static int Intentos { get { return intentos; } set {
                 intentos = value;
-                if (intentos < 0){ 
-                
+                if (intentos < -100){
+                    Resultado = 1;
                 }
             } }
         public static int Puntuacion { get { return puntuacion; } set {
                 puntuacion = value;
-                if (puntuacion > 8){
-                
+                if (puntuacion > 9){
+                    Resultado = 2;
                 }
             } }
         public static bool ParejaVolteada { get; set; }
         public List<CartaImagenId> ListaCartasOptimizadas { get; set; }
         public ViewModelPartida(){
-            llenarListaDeCartas();
+            if (ListaCartas is null)
+            {
+                llenarListaDeCartas();
+                Intentos = 6;
+                Puntuacion = 0;
+                IdCartaActual = 0;
+                Tiempo = 0;
+                IdCartaPrevia = 0;
+                Resultado = 0;
+            }
+              
         }
 
         private void llenarListaDeCartas()
@@ -48,21 +62,12 @@ namespace EncuentaLasParejas_UI_ASP.ViewModels
                 barajarCartas();
         }
   
-        public void barajarCartas()
+        private void barajarCartas()
         {
-            Random rand = new Random();
-            Carta value;
-            for (int i=ListaCartas.Count-1; i > 1;i--)
-            {               
-                if (numerosRandom is null)
-                {
-                    numerosRandom = new int[18];
-                    numerosRandom[i]=rand.Next(i + 1);
-                }
-                value = ListaCartas[numerosRandom[i]];
-                ListaCartas[numerosRandom[i]] = ListaCartas[i];
-                ListaCartas[i] = value;
-            }
+            var rand = new Random();
+            ListaCartas = ListaCartas.Select(carta => new {Carta = carta, R = rand.Next()})
+                  .OrderBy(x => x.R)
+                  .Select(x => x.Carta).ToList();
         }
 
 

@@ -5,18 +5,114 @@
     ViewData["Title"] = "Index";
 }
 
+
 <html>
-<body>
-    <p>Intentos: @ViewModelPartida.Intentos</p>
-    <p>Puntuacion: @ViewModelPartida.Puntuacion</p>
+<head>
+    @if (ViewModelPartida.ResultadoComprobado)
+    {
+        <meta http-equiv="refresh" name="prueba" content="0.4">
+    }
+</head>
+<body>    
+    <div>
+        <label style="margin-right:10px;">Intentos: @ViewModelPartida.Intentos</label>
+        <label style="margin-right:10px;">Puntuacion: @ViewModelPartida.Puntuacion</label>
+        <label style="margin-right:10px;" id="tiempo" name="tiempo">Tiempo: @TimeSpan.FromSeconds(ViewModelPartida.Tiempo).ToString()</label>
+    </div>
     <form method="post">
         @for (int posicion = 1; posicion < (Model.ListaCartasOptimizadas.Count + 1); posicion++)
         {
-            <button type="submit" name="posicion" value="@posicion" style="margin:15px;border:0px">
-                <img src="@Model.ListaCartasOptimizadas[posicion-1].Imagen" width="120" height="180"/>
+            <button id="carta" class="btnclass" type="submit" name="posicion" value="@posicion" style="margin:15px;border:0px">
+                <img src="@Model.ListaCartasOptimizadas[posicion - 1].Imagen" width="120" height="180" />
             </button>
         }
+        @Html.Hidden("tiempoGlobal", "");
     </form>
+    <div class="container">
+        <div class="modal fade" tabindex="-1" id="victory"
+             data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Victory</h4>
+                    </div>
+                    <form method="post">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <input type="text"
+                                       placeholder="Nickname" id="nombreJugador" name="nombreJugador" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary button button4" value="1" name="volverAJugarONo" id="btnHideModal">Try again</button>
+                            <button type="submit" id="btnHideModal" value="2" name="volverAJugarONo" class="btn btn-primary button button4">
+                                Save
+                            </button>
+                            <button type="submit" id="btnHideModal" value="3" name="volverAJugarONo" class="btn btn-primary button button4">
+                                Exit
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="modal fade" tabindex="-1" id="defeat"
+             data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">You Lose</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="btnHideModal" class="btn btn-primary button button4" value="1" name="volverAJugarONo">Try again</button>
+                        <button type="button" id="btnHideModal" class="btn btn-primary button button4" value="3" name="volverAJugarONo">
+                            Exit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
+    </script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        var nIntervId, tiempo=@ViewModelPartida.Tiempo;
+        $(document).ready(function updateLabel() {
+            nIntervId = window.setInterval(aumentar, 1000);
+        });
+        function aumentar() {
+            document.getElementById('tiempo').innerHTML = "Tiempo: " + new Date(tiempo * 1000).toISOString().substr(11, 8).toString();
+            tiempo++;
+        }
+        $(".btnclass").bind("click", function () {
+            $('#tiempoGlobal').val(tiempo.toString());
+        });
+    </script>
+    @if (ViewModelPartida.Resultado == 2)
+    {
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#victory").modal('show');
+            });
+            $("#btnHideModal").click(function () {
+                $("#victory").modal('hide');
+            });
+        </script>
+    }
+    else @if (ViewModelPartida.Resultado == 1)
+{
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#defeat").modal('show');
+    });
+    $("#btnHideModal").click(function () {
+        $("#defeat").modal('hide');
+    });
+</script>
+}
 </body>
 </html>
 

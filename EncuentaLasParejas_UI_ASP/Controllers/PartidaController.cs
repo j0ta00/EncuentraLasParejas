@@ -1,4 +1,6 @@
 ﻿using EncuentaLasParejas_UI_ASP.Models;
+using EncuentraLasParejas_BL.Gestora;
+using EncuentraLasParejas_Entities;
 using EncuentraLasParejas_UI_ASP.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,50 +12,84 @@ namespace EncuentaLasParejas_UI_ASP.Controllers
 {
     public class PartidaController : Controller
     {
-        [HttpGet]
-        [HttpPost]
-        public IActionResult Index(int posicion)
+        public IActionResult Index()
         {
             ViewModels.ViewModelPartida vm = new ViewModels.ViewModelPartida();
-            Carta carta = null;
-            if (posicion != 0)
+            if (ViewModels.ViewModelPartida.VoltearCartas)
             {
-                for (int i = 0; i < vm.ListaCartas.Count(); i++)
+                ViewModels.ViewModelPartida.ResultadoComprobado = false;
+                ViewModels.ViewModelPartida.Intentos--;
+                ViewModels.ViewModelPartida.ListaCartas.ForEach(carta =>
                 {
-                    if (i == (posicion - 1))
+                    if ((carta.Id == ViewModels.ViewModelPartida.IdCartaPrevia || carta.Id == ViewModels.ViewModelPartida.IdCartaActual) && carta.Descubierta)
                     {
-                        (carta = vm.ListaCartas[i]).Descubierta = true;
-                    }
-                }
-                if (!ViewModels.ViewModelPartida.ParejaVolteada)
-                {
-                    ViewModels.ViewModelPartida.IdCartaPrevia = carta.Id;
-                    ViewModels.ViewModelPartida.ParejaVolteada = true;
-                }
-                else {
-                    ViewModels.ViewModelPartida.ParejaVolteada = false;
-                    if (ViewModels.ViewModelPartida.IdCartaPrevia == carta.Id)
-                    {
-                        ViewModels.ViewModelPartida.Puntuacion++;
-
-                    }
-                    else {
                         carta.Descubierta = false;
-                        vm.ListaCartas.Find(carta=>carta.Id== ViewModels.ViewModelPartida.IdCartaPrevia).Descubierta=false;
-                        ViewModels.ViewModelPartida.Intentos--;
                     }
-                }
+                });
+                ViewModels.ViewModelPartida.VoltearCartas = false;
             }
+            if (ViewModels.ViewModelPartida.ResultadoComprobado)
+            { ViewModels.ViewModelPartida.VoltearCartas = true; }            
             vm.llenarListaDeCartasOptimizadas();
             return View(vm);
         }
 
-        private void inicializarPunutacionEIntentos()
+        [HttpPost]
+        public IActionResult Index(int posicion, String nombreJugador, int volverAJugarONo, int tiempoGlobal)
         {
-            if (ViewModels.ViewModelPartida.Intentos == 0 || ViewModels.ViewModelPartida.Puntuacion == 9){
-                ViewModels.ViewModelPartida.Intentos =6;
-                ViewModels.ViewModelPartida.Puntuacion =0;
+            Carta carta = null;
+            ViewModels.ViewModelPartida.Tiempo = tiempoGlobal;
+            if (volverAJugarONo == 0)
+            {
+                if (posicion != 0)
+                {
+                    for (int i = 0; i < ViewModels.ViewModelPartida.ListaCartas.Count(); i++)//Encuentro la carta clicada
+                    {
+                        if (i == (posicion - 1))
+                        {
+                            (carta = ViewModels.ViewModelPartida.ListaCartas[i]).Descubierta = true;//una vez encontrada dicha carta, voy a modificar sus propiedades
+                        }
+                    }
+                    if (!ViewModels.ViewModelPartida.ParejaVolteada)
+                    {//si no hay dos cartas ya volteadas
+                        ViewModels.ViewModelPartida.IdCartaPrevia = carta.Id;
+                        ViewModels.ViewModelPartida.ParejaVolteada = true;
+                    }
+                    else
+                    {
+                        ViewModels.ViewModelPartida.ParejaVolteada = false;
+                        if (ViewModels.ViewModelPartida.IdCartaPrevia == carta.Id)
+                        {
+                            ViewModels.ViewModelPartida.ListaCartas.Find(carta => carta.Id == ViewModels.ViewModelPartida.IdCartaPrevia).Descubierta = true;
+                            ViewModels.ViewModelPartida.Puntuacion++;
+
+                        }
+                        else
+                        {
+                            //carta.Descubierta = false;
+                            //ViewModels.ViewModelPartida.ListaCartas.Find(carta => carta.Id == ViewModels.ViewModelPartida.IdCartaPrevia).Descubierta = false;                       
+                            ViewModels.ViewModelPartida.ResultadoComprobado = true;
+                            ViewModels.ViewModelPartida.IdCartaActual = carta.Id;
+                        }
+                    }
+                }
             }
+            else if (volverAJugarONo == 1)
+            {
+                restaurarElementos();
+            } else if (volverAJugarONo==2){
+                if (string.IsNullOrEmpty(nombreJugador)){
+                    nombreJugador = "Guess";
+                }
+                GestoraPuntuacion_BL.actualizarOInsertar(new clsPuntuacion(nombreJugador,ViewModels.ViewModelPartida.Tiempo.ToString()));
+            }
+            return RedirectToAction("Index");
+        }
+
+
+        private void restaurarElementos()
+        {            
+            ViewModels.ViewModelPartida.ListaCartas = null;
         }
     }
 }
