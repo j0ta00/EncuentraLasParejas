@@ -1,10 +1,12 @@
 ﻿using EncuentaLasParejas_UI_ASP.Models;
 using EncuentraLasParejas_BL.Gestora;
+using EncuentraLasParejas_BL.Listados;
 using EncuentraLasParejas_Entities;
 using EncuentraLasParejas_UI_ASP.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -37,8 +39,12 @@ namespace EncuentaLasParejas_UI_ASP.Controllers
         [HttpPost]
         public IActionResult Index(int posicion, String nombreJugador, int volverAJugarONo, int tiempoGlobal)
         {
+            IActionResult view = null;
             Carta carta = null;
-            ViewModels.ViewModelPartida.Tiempo = tiempoGlobal;
+            if (tiempoGlobal != 0)
+            {
+                ViewModels.ViewModelPartida.Tiempo = tiempoGlobal;
+            }
             if (volverAJugarONo == 0)
             {
                 if (posicion != 0)
@@ -66,26 +72,70 @@ namespace EncuentaLasParejas_UI_ASP.Controllers
                         }
                         else
                         {
-                            //carta.Descubierta = false;
-                            //ViewModels.ViewModelPartida.ListaCartas.Find(carta => carta.Id == ViewModels.ViewModelPartida.IdCartaPrevia).Descubierta = false;                       
                             ViewModels.ViewModelPartida.ResultadoComprobado = true;
                             ViewModels.ViewModelPartida.IdCartaActual = carta.Id;
                         }
                     }
                 }
+                view = RedirectToAction("Index");
             }
             else if (volverAJugarONo == 1)
             {
                 restaurarElementos();
-            } else if (volverAJugarONo==2){
-                if (string.IsNullOrEmpty(nombreJugador)){
+                view = RedirectToAction("Index");
+            } else if (volverAJugarONo == 2) {
+                if (string.IsNullOrEmpty(nombreJugador)) {
                     nombreJugador = "Guess";
                 }
-                GestoraPuntuacion_BL.actualizarOInsertar(new clsPuntuacion(nombreJugador,ViewModels.ViewModelPartida.Tiempo.ToString()));
+                GestoraPuntuacion_BL.actualizarOInsertar(new clsPuntuacion(nombreJugador, ViewModels.ViewModelPartida.Tiempo.ToString()));
+                ViewModels.ViewModelPartida.Resultado = 3;
+                view = RedirectToAction("Index");
+            } else if (volverAJugarONo == 3){
+                view = RedirectToAction("Menu");
             }
-            return RedirectToAction("Index");
+            return view;
         }
 
+        public IActionResult Menu()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Menu(int eleccionMenu)
+        {
+            IActionResult view = null;
+            if (eleccionMenu == 1)
+            {
+                view = RedirectToAction("Index");
+            }
+            else {
+                view = RedirectToAction("Scoreboard");
+            }
+            return view;
+        }
+
+        public IActionResult Scoreboard()
+        {
+            List<clsPuntuacion> listado=null;
+            try
+            {
+                listado = ListadoPuntuacion_BL.getListadoCompletoPuntuacion().OrderBy(puntuacion => puntuacion.Tiempo).ToList();
+            }
+            catch (SqlException){ 
+                
+            }
+            return View(listado);
+        }
+
+        [HttpPost]
+        public IActionResult Scoreboard(bool retroceder)
+        {
+            IActionResult view = null;
+            if (retroceder){
+                view = RedirectToAction("Menu");
+            }
+            return view;
+        }
 
         private void restaurarElementos()
         {            

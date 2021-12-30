@@ -8,18 +8,23 @@
 
 <html>
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     @if (ViewModelPartida.ResultadoComprobado)
     {
         <meta http-equiv="refresh" name="prueba" content="0.4">
     }
 </head>
-<body>    
-    <div>
+<body>
+    <div style="margin-left:15px;">
         <label style="margin-right:10px;">Intentos: @ViewModelPartida.Intentos</label>
         <label style="margin-right:10px;">Puntuacion: @ViewModelPartida.Puntuacion</label>
         <label style="margin-right:10px;" id="tiempo" name="tiempo">Tiempo: @TimeSpan.FromSeconds(ViewModelPartida.Tiempo).ToString()</label>
     </div>
     <form method="post">
+        <div style="margin-left:15px;margin-top:10px;margin-bottom:10px;">
+            <button type="submit" style="background-color: #1b6ec2; color:white;border: 2px; border-color: black; border-radius: 5px; height: 50px; width: 50px; " class="fa fa-refresh"  value="1" name="volverAJugarONo"></button>
+            <button type="submit" style="background-color: #1b6ec2; color:white;border: 2px; border-color: black; border-radius: 5px; height: 50px; width: 50px; "  class="fa fa-home" value="3" name="volverAJugarONo"></button>
+        </div>
         @for (int posicion = 1; posicion < (Model.ListaCartasOptimizadas.Count + 1); posicion++)
         {
             <button id="carta" class="btnclass" type="submit" name="posicion" value="@posicion" style="margin:15px;border:0px">
@@ -38,16 +43,18 @@
                     </div>
                     <form method="post">
                         <div class="modal-body">
-                            <div class="form-group">
+                            <div id="div1" class="form-group" style="border:0px;">
                                 <input type="text"
-                                       placeholder="Nickname" id="nombreJugador" name="nombreJugador" />
+                                       placeholder="Nickname" maxlength="15" id="nombreJugador" name="nombreJugador" />
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary button button4" value="1" name="volverAJugarONo" id="btnHideModal">Try again</button>
-                            <button type="submit" id="btnHideModal" value="2" name="volverAJugarONo" class="btn btn-primary button button4">
-                                Save
-                            </button>
+                            <div class="modal-footer" id="div2" style="border:0px;">
+                                <button type="submit" id="btnSave" value="2" name="volverAJugarONo" class="btn btn-primary button button4">
+                                    Save
+                                </button>
+                            </div>
                             <button type="submit" id="btnHideModal" value="3" name="volverAJugarONo" class="btn btn-primary button button4">
                                 Exit
                             </button>
@@ -81,38 +88,54 @@
     <script type="text/javascript">
         var nIntervId, tiempo=@ViewModelPartida.Tiempo;
         $(document).ready(function updateLabel() {
+            document.getElementById('tiempo').innerHTML = "Tiempo: " + new Date(tiempo * 1000).toISOString().substr(11, 8).toString();
             nIntervId = window.setInterval(aumentar, 1000);
         });
         function aumentar() {
-            document.getElementById('tiempo').innerHTML = "Tiempo: " + new Date(tiempo * 1000).toISOString().substr(11, 8).toString();
             tiempo++;
+            document.getElementById('tiempo').innerHTML = "Tiempo: " + new Date(tiempo * 1000).toISOString().substr(11, 8).toString();           
         }
         $(".btnclass").bind("click", function () {
             $('#tiempoGlobal').val(tiempo.toString());
         });
     </script>
-    @if (ViewModelPartida.Resultado == 2)
+
+    @if (ViewModelPartida.Resultado == 3)
     {
         <script type="text/javascript">
             $(document).ready(function () {
-                $("#victory").modal('show');
-            });
-            $("#btnHideModal").click(function () {
-                $("#victory").modal('hide');
-            });
+                $("#div1").hide();
+                $("#div2").hide();
+            });                       
         </script>
     }
-    else @if (ViewModelPartida.Resultado == 1)
-{
-<script type="text/javascript">
-    $(document).ready(function () {
-        $("#defeat").modal('show');
-    });
-    $("#btnHideModal").click(function () {
-        $("#defeat").modal('hide');
-    });
-</script>
+        @if (ViewModelPartida.Resultado > 1)
+        {
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    $("#victory").modal('show');
+                });
+                $("#btnSave").click(function save() {
+                    $("#victory").modal('hide');
+                    var guardado = 1;
+                });
+
+                $("#btnHideModal").click(function () {
+                    $("#victory").modal('hide');
+                });
+            </script>
+        }
+        else @if (ViewModelPartida.Resultado == 1)
+   {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#defeat").modal('show');
+        });
+        $("#btnHideModal").click(function () {
+            $("#defeat").modal('hide');
+        });
+    </script>
 }
-</body>
+    </body>
 </html>
 

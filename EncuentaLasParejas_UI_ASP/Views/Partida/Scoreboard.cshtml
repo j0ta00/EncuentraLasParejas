@@ -1,0 +1,29 @@
+﻿@model List<clsPuntuacion>
+@using EncuentraLasParejas_Entities
+    @{
+        ViewData["Title"] = "Scoreboard";
+
+
+}
+    <html>
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        <form method="post">
+            <button name="retroceder" type="submit" value="true" style="background-color: #1b6ec2; color:white;border: 2px; border-color: black; border-radius: 5px; height: 50px; width: 50px; " class="fa fa-home"></button>
+        </form>
+        <h1 style="text-align:center;margin-right:100px;margin-bottom:20px;">SCOREBOARD</h1>
+        @foreach (clsPuntuacion puntuacion in @Model)
+        {
+        <div style="text-align:center;">
+            <ul style=" width:400px; margin-left: auto; margin-right: auto;">
+                <li style="text-align:left;"><label style="color: #1b6ec2; font-size: 20px;">Name: @puntuacion.NombreJugador</label>
+                                <label style="color: #1b6ec2; font-size: 20px; margin-left: 10px;">Time: @puntuacion.Tiempo</label>
+                            </li>
+
+            </ul>
+        </div>
+        }
+    </body>
+</html>

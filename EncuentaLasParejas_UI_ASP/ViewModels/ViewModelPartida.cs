@@ -26,7 +26,7 @@ namespace EncuentaLasParejas_UI_ASP.ViewModels
             } }
         public static int Puntuacion { get { return puntuacion; } set {
                 puntuacion = value;
-                if (puntuacion > 9){
+                if (puntuacion > 8){
                     Resultado = 2;
                 }
             } }

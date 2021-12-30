@@ -34,14 +34,14 @@ namespace EncuentraLasParejas_DAL.UtilsQuery
         /// </summary>
         /// <param name="query">String that contains the query to execute</param>
         /// <param name="value">int parameter that is th id of a object and represent a parameter in the query</param>
-        public clsPuntuacion QuerySelectWithValueString(String query, string value)
+        public void QuerySelectWithValueString(String query, string value)
         {
             clsPuntuacion clsPuntuacion=new clsPuntuacion();
             myCommand.Parameters.AddWithValue("nombreJugador", value);
             myCommand.CommandText = query;
             myCommand.Connection = myConnection;
-            clsPuntuacion = (clsPuntuacion)myCommand.ExecuteScalar();
-            return clsPuntuacion;
+            myReader = myCommand.ExecuteReader();
+
         }
         /// <summary>
         /// Util method that allow to us execute a sql select instruction delete
@@ -61,7 +61,7 @@ namespace EncuentraLasParejas_DAL.UtilsQuery
 
         public int QueryActualizarOInsertarPuntuacion(String query,clsPuntuacion puntuacion){
             myCommand.Parameters.Add("@nombreJugador",System.Data.SqlDbType.VarChar).Value=puntuacion.NombreJugador;
-            myCommand.Parameters.Add("@tiempoRealizado", System.Data.SqlDbType.Time).Value = puntuacion.Tiempo;
+            myCommand.Parameters.Add("@tiempoRealizado", System.Data.SqlDbType.Time).Value = TimeSpan.FromSeconds(double.Parse(puntuacion.Tiempo)).ToString();
             myCommand.CommandText =query;
             myCommand.Connection = myConnection;
             return myCommand.ExecuteNonQuery();

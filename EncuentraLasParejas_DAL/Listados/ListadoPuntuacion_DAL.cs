@@ -24,16 +24,26 @@ namespace EncuentraLasParejas_DAL.Listados
         }
 
         private static clsPuntuacion leerUnaPuntuacion(SqlDataReader reader){
-            clsPuntuacion oPuntuacion = new clsPuntuacion();
-            oPuntuacion.NombreJugador=(string)reader["nombreJugador"];
-            oPuntuacion.Tiempo = (string)reader["tiempoRealizado"].ToString();
+            clsPuntuacion oPuntuacion = null;
+            if (reader.HasRows)
+            {
+                oPuntuacion = new clsPuntuacion();
+                oPuntuacion.NombreJugador = (string)reader["nombreJugador"];
+                oPuntuacion.Tiempo = reader["tiempoRealizado"].ToString();
+            }
             return oPuntuacion;
         }
         public static clsPuntuacion getUnaPuntuacion(string nombreJugador)
         {
-            clsPuntuacion oPuntuacion = new clsPuntuacion();
+            clsPuntuacion oPuntuacion = null;
             clsUtilsQuery utilsMyReader = new clsUtilsQuery();
-            return utilsMyReader.QuerySelectWithValueString("SELECT * FROM Puntuacion Where nombreJugador=@nombreJugador",nombreJugador);
+            utilsMyReader.QuerySelectWithValueString("SELECT * FROM Puntuacion Where nombreJugador=@nombreJugador", nombreJugador);
+            if (utilsMyReader.MyReader.HasRows)
+            {
+                utilsMyReader.MyReader.Read();
+                oPuntuacion = leerUnaPuntuacion(utilsMyReader.MyReader);
+            }
+            return oPuntuacion;
         }
     }
 }
