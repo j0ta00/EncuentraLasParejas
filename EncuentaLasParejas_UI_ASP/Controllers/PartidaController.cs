@@ -136,7 +136,9 @@ namespace EncuentaLasParejas_UI_ASP.Controllers
             }
             return view;
         }
-
+        /// <summary>
+        /// Restaura los elementos necesarios para que la partida vuelva a empezar de nuevo
+        /// </summary>
         private void restaurarElementos()
         {            
             ViewModels.ViewModelPartida.ListaCartas = null;

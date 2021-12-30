@@ -10,6 +10,7 @@ namespace EncuentaLasParejas_UI_ASP.ViewModels
 {
     public class ViewModelPartida
     {
+        #region propiedades
         private static int puntuacion, intentos;
         public static bool ResultadoComprobado { get; set; }
         public static bool VoltearCartas { get; set; }
@@ -32,6 +33,8 @@ namespace EncuentaLasParejas_UI_ASP.ViewModels
             } }
         public static bool ParejaVolteada { get; set; }
         public List<CartaImagenId> ListaCartasOptimizadas { get; set; }
+        #endregion
+        #region constructor
         public ViewModelPartida(){
             if (ListaCartas is null)
             {
@@ -45,7 +48,11 @@ namespace EncuentaLasParejas_UI_ASP.ViewModels
             }
               
         }
-
+        #endregion
+        #region metodos
+        /// <summary>
+        /// Llena una lista con los objetos carta necesarios para el juego
+        /// </summary>
         private void llenarListaDeCartas()
         {
             Carta carta;
@@ -61,7 +68,9 @@ namespace EncuentaLasParejas_UI_ASP.ViewModels
             }
                 barajarCartas();
         }
-  
+        /// <summary>
+        /// Baraja las cartas haciendo que su disposicion sea completamente aleatoria
+        /// </summary>
         private void barajarCartas()
         {
             var rand = new Random();
@@ -69,13 +78,13 @@ namespace EncuentaLasParejas_UI_ASP.ViewModels
                   .OrderBy(x => x.R)
                   .Select(x => x.Carta).ToList();
         }
-
-
-
+        /// <summary>
+        /// Llena la lista de cartas con el modelo de las cartas unicamente con su imagen e id que es lo único que necesita mi vista de las cartas, para que sea lo más liviano posible en la parte del cliente
+        /// </summary>
         public void llenarListaDeCartasOptimizadas(){
             ListaCartasOptimizadas = new List<CartaImagenId>();
             ListaCartas.ForEach(carta=>ListaCartasOptimizadas.Add(new CartaImagenId(carta)));
         }
-
+        #endregion
     }
 }

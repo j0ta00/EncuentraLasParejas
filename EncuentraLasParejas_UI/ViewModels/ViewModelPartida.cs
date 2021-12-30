@@ -18,6 +18,7 @@ namespace EncuentraLasParejas_UI.ViewModels
 {
     public class ViewModelPartida : clsVMBase
     {
+        #region propiedades
         private int tiempo;
         private DispatcherTimer Timer = new DispatcherTimer();
         public ObservableCollection<Carta> ListaCartas { get; set; }
@@ -60,6 +61,8 @@ namespace EncuentraLasParejas_UI.ViewModels
                 }
             }
         }
+        #endregion
+        #region constructor
         public ViewModelPartida() {
             puntuacion = 0;
             intentos = 6;
@@ -78,13 +81,24 @@ namespace EncuentraLasParejas_UI.ViewModels
             Timer.Start();
             Clicar = new DelegateCommand(clicarEnCarta_Execute);
         }
+        #endregion
+        #region metodos y commands
+        /// <summary>
+        /// Command asociado a un boton que llamará a una funcion la cual se encargará de hacer lo que le botón haga, en este caso jugar de nuevo
+        /// </summary>
         private void jugarDeNuevo(){
             SalirOJugarDeNuevo(ContentDialogResult.Primary);
         }
+        /// <summary>
+        /// Command asociado a un boton que llamará a una funcion la cual se encargará de hacer lo que le botón haga, en este caso volver al menú principal
+        /// </summary>
         private void volverAlMenu(){
 
             SalirOJugarDeNuevo(ContentDialogResult.None);
         }
+        /// <summary>
+        /// Comprueba el resultado de las cartas, es decir si coinciden aumenta la puntuacion y si no bajan los intentos
+        /// </summary>
         private void comprobarCartas() {
             if (CartaSeleccionada.Id == CartaPrevia.Id)
                 {               
@@ -97,12 +111,17 @@ namespace EncuentraLasParejas_UI.ViewModels
                     NotifyPropertyChanged("Intentos");
             }   
         }
+        /// <summary>
+        /// Voltea las cartas si estas no han coincidido dando unas milesimas para que el usuario pueda recordar donde estaban
+        /// </summary>
         private async void esperarYDarLaVuelta(){
             await Task.Delay(400);
             CartaSeleccionada.Descubierta = false;
             CartaPrevia.Descubierta = false;
-        } 
-
+        }
+        /// <summary>
+        /// Llena una lista con los objetos carta necesarios para el juego
+        /// </summary>
         private void llenarListaDeCartas() {
             Carta carta;
             ListaCartas = new ObservableCollection<Carta>();
@@ -115,7 +134,9 @@ namespace EncuentraLasParejas_UI.ViewModels
             barajarCartas();
             NotifyPropertyChanged("ListaCartas");
         }
-
+        /// <summary>
+        /// Baraja las cartas haciendo que su disposicion sea completamente aleatoria
+        /// </summary>
         private void barajarCartas(){
             var rand = new Random();
             ListaCartas = new ObservableCollection<Carta>(ListaCartas.Select(carta => new { Carta = carta, R = rand.Next() })
@@ -123,6 +144,10 @@ namespace EncuentraLasParejas_UI.ViewModels
                  .Select(x => x.Carta)
                  .ToList());
         }
+        /// <summary>
+        /// En función del numero de cartas volteadas guardará el id de la carta actual y aumentará el numero de carta volteadas o en el caso
+        /// de que ya hubiera 1 carta volteada comprobará si estas coinciden o no llamando a una función para ello
+        /// </summary>
         private void clicarEnCarta_Execute() {
             if (!cartaSeleccionada.Descubierta)
             {
@@ -137,9 +162,14 @@ namespace EncuentraLasParejas_UI.ViewModels
                     ++numeroCartasVolteadas; }
             }
         }
+
         //private bool clicarEnCarta_CanExecute(){
         //    return !(CartaSeleccionada is null);       
-        //}
+        //}//por alguna razon el can execute no me funcionaba lo cual no tiene sentido nignuno
+        /// <summary>
+        /// En funcion del resultado de la partida imprime un mensaje u otro con el que interactuará el usuario
+        /// </summary>
+        /// <param name="resultado"></param>
         private async void imprimirResultado(bool resultado) {
             ContentDialog dialog;
             ContentDialogResult resultadoDialog;
@@ -181,11 +211,17 @@ namespace EncuentraLasParejas_UI.ViewModels
             }
             SalirOJugarDeNuevo(resultadoDialog);
         }
-
+        /// <summary>
+        /// LLama a l bl para que esta se encargue de aplicar las lógicas de negocio y llamar a las capas necesarias para que se acabe almacenando la puntuacion obtenida en una bbdd
+        /// </summary>
+        /// <param name="nombreJugador"></param>
         private void guardarResultado(string nombreJugador){
             GestoraPuntuacion_BL.actualizarOInsertar(new clsPuntuacion(nombreJugador,Tiempo));
         }
-
+        /// <summary>
+        /// En funcion de lo elegido por el usuario llama a las funciones necesarias para volver al menú principal o para empezar una nueva partida
+        /// </summary>
+        /// <param name="resultado"></param>
         private void SalirOJugarDeNuevo(ContentDialogResult resultado){
             Frame rootFrame = null;
             if (resultado == ContentDialogResult.Primary)
@@ -197,7 +233,9 @@ namespace EncuentraLasParejas_UI.ViewModels
                 rootFrame.Navigate(typeof(MainPage));
             }
         }
-
+        /// <summary>
+        /// Restaura los elementos necesarios para que el juego vuelva a empezar
+        /// </summary>
         private void volverAJugar(){
             this.Puntuacion=0;
             this.Intentos=6;
@@ -211,6 +249,7 @@ namespace EncuentraLasParejas_UI.ViewModels
             NotifyPropertyChanged("Puntuacion");
             NotifyPropertyChanged("Intentos");
         }
+        #endregion
     }
 }
 

@@ -23,19 +23,30 @@ namespace EncuentraLasParejas_UI.ViewModels
 {
     public class ViewModelMainPage
     {
+        #region propiedades
         public DelegateCommand<object> VerPuntuacion { get; set; }
         public DelegateCommand Jugar { get; set; }
         public DelegateCommand<object> Retroceder { get; set; }
         private StackPanel StackPanelAuxiliar { get; set; }
+        #endregion
+        #region constructor
         public ViewModelMainPage() {
             VerPuntuacion = new DelegateCommand<object>(mostrarPuntuacion_Execute);
             Jugar = new DelegateCommand(llevarAlTablero_Execute);
             Retroceder = new DelegateCommand<object>(retroceder_Execute);
         }
-
+        #endregion
+        #region metodos y commands
+        /// <summary>
+        /// Command asociado a un botón el cual lleva a una vista de juego una vez se haya clicado en dicho botón
+        /// </summary>
         private void llevarAlTablero_Execute(){
             (Window.Current.Content as Frame).Navigate(typeof(Tablero));
         }
+        /// <summary>
+        /// Modifica los elementos visuales de la página para volver al menú principal
+        /// </summary>
+        /// <param name="sender">object sender</param>
         private void retroceder_Execute(object sender)
         {
             List<UIElement> lista;
@@ -45,14 +56,16 @@ namespace EncuentraLasParejas_UI.ViewModels
             StackPanelAuxiliar.Children.Clear();
             lista.ForEach(elementoVisual => stackPanel.Children.Add(elementoVisual));
         }
-        /*
-         Este macro método es basicamente una forma de complicarme la vida, ya que literalmente podría ser una typeof a una página, pero con el fin
-          de querer probar el tema de los recursos, los commands parameters y aprender un poco sobre los arboles de los elementos visuales, me propuse ahorrarme esa página y modificar
-          la main page para que cuando se clicase, de forma dinámica se actualizase la vista sin necesidad de mandarte a otra página, literalmente no tiene otra motivación más que
-          el puro aprendizaje, de hecho me hubiese ahorrado una cantidad de horas tremenda si hubiera optado por hacerlo en una nueva página.
-          En definitiva este método me ha llevado muchas horas, uso mil cosas muy interesantes que no había hecho desde código c# solo desde xaml y ha sido muy divertido a la par
-          que frustrante, pues constantemente los elementos desaparecian sin motivo o al volver a la menu principal aparecian de nuevo y se superponian, entre otros muchos más errores.
-         */
+        /// <summary>
+        /// Este macro método es basicamente una forma de complicarme la vida, ya que literalmente podría ser una typeof a una página, pero con el fin
+        /// de querer probar el tema de los recursos, los commands parameters y aprender un poco sobre los arboles de los elementos visuales, me propuse ahorrarme esa página y modificar
+        ///la main page para que cuando se clicase, de forma dinámica se actualizase la vista sin necesidad de mandarte a otra página, literalmente no tiene otra motivación más que
+        ///el puro aprendizaje, de hecho me hubiese ahorrado una cantidad de horas tremenda si hubiera optado por hacerlo en una nueva página.
+        ///En definitiva este método me ha llevado muchas horas, uso mil cosas muy interesantes que no había hecho desde código c# solo desde xaml y ha sido muy divertido a la par
+        /// que frustrante, pues constantemente los elementos desaparecian sin motivo o al volver a la menu principal aparecian de nuevo y se superponian, entre otros muchos más errores.
+        /// 
+        /// </summary>
+        /// <param name="sender">object sender</param>
         private void mostrarPuntuacion_Execute(object sender){
                 Button btn = sender as Button;
                 RelativePanel relativePanel = new RelativePanel();
@@ -123,5 +136,6 @@ namespace EncuentraLasParejas_UI.ViewModels
             };
             await dialog.ShowAsync();
         }
+        #endregion
     }
 }

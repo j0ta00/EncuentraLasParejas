@@ -58,7 +58,12 @@ namespace EncuentraLasParejas_DAL.UtilsQuery
             result = myCommand.ExecuteNonQuery();
             return result;
         }
-
+        /// <summary>
+        /// Inserta o actualiza un objeto puntuacion en nuestra bbdd
+        /// </summary>
+        /// <param name="query">string query</param>
+        /// <param name="puntuacion">clsPuntuacion puntuacion</param>
+        /// <returns>int filas afectadas</returns>
         public int QueryActualizarOInsertarPuntuacion(String query,clsPuntuacion puntuacion){
             myCommand.Parameters.Add("@nombreJugador",System.Data.SqlDbType.VarChar).Value=puntuacion.NombreJugador;
             myCommand.Parameters.Add("@tiempoRealizado", System.Data.SqlDbType.Time).Value = TimeSpan.FromSeconds(double.Parse(puntuacion.Tiempo)).ToString();
