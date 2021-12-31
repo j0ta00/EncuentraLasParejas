@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     @if (ViewModelPartida.ResultadoComprobado)
     {
-        <meta http-equiv="refresh" name="prueba" content="0.4">
+        <meta http-equiv="refresh" name="prueba" content="0.25">
     }
 </head>
 <body>
@@ -88,7 +88,7 @@
     <script type="text/javascript">
         var nIntervId, tiempo=@ViewModelPartida.Tiempo;
         $(document).ready(function updateLabel() {
-            document.getElementById('tiempo').innerHTML = "Tiempo: " + new Date(tiempo * 1000).toISOString().substr(11, 8).toString();
+            setTimeout(aumentar,500);//esto es para hacer la primera llamada y que no tarde un segundo entero porque si no cada vez que carga la pagina tienes un segundo donde no avanza el tiempo
             nIntervId = window.setInterval(aumentar, 1000);
         });
         function aumentar() {

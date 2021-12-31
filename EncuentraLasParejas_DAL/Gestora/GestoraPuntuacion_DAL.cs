@@ -18,15 +18,15 @@ namespace EncuentraLasParejas_DAL.Gestora
             string query = "";
             int resultado = 0;
             clsUtilsQuery myUtilsQuery = new clsUtilsQuery();
-            clsPuntuacion puntuacionYaAlmacenada = new clsPuntuacion();
-            if ((puntuacionYaAlmacenada=Listados.ListadoPuntuacion_DAL.getUnaPuntuacion(puntuacion.NombreJugador))is null) {//aquí está lo que comentaba del tema del 0 si el tiempo fuera un int 0 y el tiempo en el que alguien lo completo es 0, entraría en la condición y eso sería erroneo
+            TimeSpan tiempoAlmacenado;
+            if ((tiempoAlmacenado=Listados.ListadoPuntuacion_DAL.getUnaPuntuacion(puntuacion.NombreJugador)).TotalSeconds==0){
                 query = "Insert into Puntuacion(nombreJugador,tiempoRealizado) values (@nombreJugador,@tiempoRealizado)";
                 resultado = myUtilsQuery.QueryActualizarOInsertarPuntuacion(query, puntuacion);
             }
             else {
-                if (TimeSpan.Parse(puntuacionYaAlmacenada.Tiempo).Seconds > int.Parse(puntuacion.Tiempo))
+                if (tiempoAlmacenado.TotalSeconds > TimeSpan.Parse(puntuacion.Tiempo).TotalSeconds)//tengo que hacer este parseo porque si no al parsear de string a int me daba un fallo de formato
                 {
-                    query = "update puntuacion set nombreJugador=@nombreJugador,tiempoRealizado=@tiempoRealizado";
+                    query = "update puntuacion set nombreJugador=@nombreJugador,tiempoRealizado=@tiempoRealizado where nombreJugador=@nombreJugador";
                     resultado = myUtilsQuery.QueryActualizarOInsertarPuntuacion(query, puntuacion);
                 }
             }

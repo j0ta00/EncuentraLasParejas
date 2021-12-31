@@ -126,7 +126,7 @@ namespace EncuentraLasParejas_UI.ViewModels
         /// <summary>
         /// Muestra un dialogo alertando al usuario que ha sucedido un error al acceder a la base de datos
         /// </summary>
-        private async void mostrarContentDialogErrorSql()
+        public static async void mostrarContentDialogErrorSql()
         {
             ContentDialog dialog = new ContentDialog()
             {

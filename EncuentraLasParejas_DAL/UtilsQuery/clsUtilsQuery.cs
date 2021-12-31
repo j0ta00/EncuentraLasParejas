@@ -3,6 +3,7 @@ using EncuentraLasParejas_DAL.MyConnection;
 using EncuentraLasParejas_Entities;
 using System;
 using System.Data.SqlClient;
+using System.Globalization;
 
 namespace EncuentraLasParejas_DAL.UtilsQuery
 {
@@ -34,13 +35,13 @@ namespace EncuentraLasParejas_DAL.UtilsQuery
         /// </summary>
         /// <param name="query">String that contains the query to execute</param>
         /// <param name="value">int parameter that is th id of a object and represent a parameter in the query</param>
-        public void QuerySelectWithValueString(String query, string value)
+        public TimeSpan QuerySelectWithValueString(String query, string value)
         {
             clsPuntuacion clsPuntuacion=new clsPuntuacion();
             myCommand.Parameters.AddWithValue("nombreJugador", value);
             myCommand.CommandText = query;
             myCommand.Connection = myConnection;
-            myReader = myCommand.ExecuteReader();
+            return myCommand.ExecuteScalar()==null? TimeSpan.Zero: TimeSpan.Parse(myCommand.ExecuteScalar().ToString());
 
         }
         /// <summary>
@@ -66,7 +67,7 @@ namespace EncuentraLasParejas_DAL.UtilsQuery
         /// <returns>int filas afectadas</returns>
         public int QueryActualizarOInsertarPuntuacion(String query,clsPuntuacion puntuacion){
             myCommand.Parameters.Add("@nombreJugador",System.Data.SqlDbType.VarChar).Value=puntuacion.NombreJugador;
-            myCommand.Parameters.Add("@tiempoRealizado", System.Data.SqlDbType.Time).Value = TimeSpan.FromSeconds(double.Parse(puntuacion.Tiempo)).ToString();
+            myCommand.Parameters.Add("@tiempoRealizado", System.Data.SqlDbType.Time).Value = puntuacion.Tiempo;
             myCommand.CommandText =query;
             myCommand.Connection = myConnection;
             return myCommand.ExecuteNonQuery();

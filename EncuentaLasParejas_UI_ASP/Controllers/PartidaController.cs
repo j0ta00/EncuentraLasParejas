@@ -49,33 +49,8 @@ namespace EncuentaLasParejas_UI_ASP.Controllers
             {
                 if (posicion != 0)
                 {
-                    for (int i = 0; i < ViewModels.ViewModelPartida.ListaCartas.Count(); i++)//Encuentro la carta clicada
-                    {
-                        if (i == (posicion - 1))
-                        {
-                            (carta = ViewModels.ViewModelPartida.ListaCartas[i]).Descubierta = true;//una vez encontrada dicha carta, voy a modificar sus propiedades
-                        }
-                    }
-                    if (!ViewModels.ViewModelPartida.ParejaVolteada)
-                    {//si no hay dos cartas ya volteadas
-                        ViewModels.ViewModelPartida.IdCartaPrevia = carta.Id;
-                        ViewModels.ViewModelPartida.ParejaVolteada = true;
-                    }
-                    else
-                    {
-                        ViewModels.ViewModelPartida.ParejaVolteada = false;
-                        if (ViewModels.ViewModelPartida.IdCartaPrevia == carta.Id)
-                        {
-                            ViewModels.ViewModelPartida.ListaCartas.Find(carta => carta.Id == ViewModels.ViewModelPartida.IdCartaPrevia).Descubierta = true;
-                            ViewModels.ViewModelPartida.Puntuacion++;
-
-                        }
-                        else
-                        {
-                            ViewModels.ViewModelPartida.ResultadoComprobado = true;
-                            ViewModels.ViewModelPartida.IdCartaActual = carta.Id;
-                        }
-                    }
+                    carta = averiguarCarta(posicion);
+                    comprobarResultado(carta);
                 }
                 view = RedirectToAction("Index");
             }
@@ -94,6 +69,57 @@ namespace EncuentaLasParejas_UI_ASP.Controllers
                 view = RedirectToAction("Menu");
             }
             return view;
+        }
+
+        /// <summary>
+        /// Se encarga de comprobar si la carta clicada es la primera o segunda y en el caso de que sea la segunda comprueba el resultado viendo si son pareja o no
+        /// </summary>
+        /// <param name="carta">Carta carta</param>
+        private void comprobarResultado(Carta carta){
+            if (carta != null)
+            {
+                if (!ViewModels.ViewModelPartida.ParejaVolteada)
+                {//si no hay dos cartas ya volteadas
+                    ViewModels.ViewModelPartida.IdCartaPrevia = carta.Id;
+                    ViewModels.ViewModelPartida.ParejaVolteada = true;
+                }
+                else
+                {
+                    ViewModels.ViewModelPartida.ParejaVolteada = false;
+                    if (ViewModels.ViewModelPartida.IdCartaPrevia == carta.Id)
+                    {
+                        ViewModels.ViewModelPartida.ListaCartas.Find(cartaLista => cartaLista.Id == ViewModels.ViewModelPartida.IdCartaPrevia).Descubierta = true;//le pongo  cartaLista por que es la carta que pertenece a la lista y que así el nombre no sea el mismo que el del parámetro carta
+                        ViewModels.ViewModelPartida.Puntuacion++;
+
+                    }
+                    else
+                    {
+                        ViewModels.ViewModelPartida.ResultadoComprobado = true;
+                        ViewModels.ViewModelPartida.IdCartaActual = carta.Id;
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Con el fin de ahorrarme el envio de un objeto al metodos post y así que el cliente no tuviese que cargar un objeto completo, ya que lo que recibe el cliente es un modelo con menos atributos,
+        /// una vez tengo la posicion del objeto clicado lo obtendré de la lista, al ser una lista de tan solo 18 elementos, es más optimo a mi parecer hacer esto, que hacer que el cliente tuviese los 18 objetos cargados completos,
+        /// y estos fueran al post cuando se clicasen en cada uno de ellos.
+        /// Ahora sí, el proposito de este método es buscar en la lista el objeto que ha sido clicado por el usuario
+        /// </summary>
+        /// <param name="posicion">int posicion del objeto clicado</param>
+        /// <returns>Carta cartaClicada</returns>
+        private Carta averiguarCarta(int posicion){
+            Carta carta = null;
+            for (int i = 0; i < ViewModels.ViewModelPartida.ListaCartas.Count(); i++)//Encuentro la carta clicada
+            {
+                if (i == (posicion - 1) && !ViewModels.ViewModelPartida.ListaCartas[i].Descubierta)
+                {
+                    (carta = ViewModels.ViewModelPartida.ListaCartas[i]).Descubierta = true;//una vez encontrada dicha carta, voy a modificar sus propiedades
+                }
+            }
+            return carta;
         }
 
         public IActionResult Menu()
@@ -117,14 +143,16 @@ namespace EncuentaLasParejas_UI_ASP.Controllers
         public IActionResult Scoreboard()
         {
             List<clsPuntuacion> listado=null;
+            IActionResult view = null;
             try
             {
                 listado = ListadoPuntuacion_BL.getListadoCompletoPuntuacion().OrderBy(puntuacion => puntuacion.Tiempo).ToList();
+                view = View(listado);
             }
-            catch (SqlException){ 
-                
+            catch (SqlException){
+                view = View("Error");
             }
-            return View(listado);
+            return view;
         }
 
         [HttpPost]

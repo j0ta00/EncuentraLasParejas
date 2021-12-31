@@ -5,6 +5,7 @@ using EncuentraLasParejas_UI.ViewModels.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -33,8 +34,8 @@ namespace EncuentraLasParejas_UI.ViewModels
                    CartaSeleccionada.Descubierta = false;                                                                          // aun así las cartas se volteen, esto se debe a que el task.delay no duerme el hilo principal por lo que
                     CartaPrevia.Descubierta = false;                                                                                // el jugador puede seguir clicando, me parecia lo óptimo ya que  optar por dormir el hilo principal queda bastante abrupto y obligas a estar esperando al jugador aunque sean milesimas
                 }
-                cartaSeleccionada = value;
-                if (!(cartaSeleccionada is null) && (!cartaSeleccionada.Descubierta || !CartaPrevia.Descubierta))
+                cartaSeleccionada = value!=null && value.Descubierta==true?null:value;//esto es para evitar que clicando en cartas ya descubiertas consigas puntos
+                if (!(cartaSeleccionada is null))
                 {
                     Clicar.Execute(Clicar);
                 }
@@ -103,6 +104,8 @@ namespace EncuentraLasParejas_UI.ViewModels
             if (CartaSeleccionada.Id == CartaPrevia.Id)
                 {               
                     Puntuacion++;
+                    CartaSeleccionada = null;
+                    CartaPrevia = null;
                     NotifyPropertyChanged("Puntuacion");
                 }
                 else {
@@ -216,7 +219,13 @@ namespace EncuentraLasParejas_UI.ViewModels
         /// </summary>
         /// <param name="nombreJugador"></param>
         private void guardarResultado(string nombreJugador){
-            GestoraPuntuacion_BL.actualizarOInsertar(new clsPuntuacion(nombreJugador,Tiempo));
+            try
+            {
+                GestoraPuntuacion_BL.actualizarOInsertar(new clsPuntuacion(nombreJugador, Tiempo));
+            }
+            catch (SqlException){
+                ViewModelMainPage.mostrarContentDialogErrorSql();//esto es básicamente para no tener dos veces el mismo método, podría haberlo metido en una clase utilidades o algo así pero siendo un único método me parecía un poco innecesario
+            }
         }
         /// <summary>
         /// En funcion de lo elegido por el usuario llama a las funciones necesarias para volver al menú principal o para empezar una nueva partida
