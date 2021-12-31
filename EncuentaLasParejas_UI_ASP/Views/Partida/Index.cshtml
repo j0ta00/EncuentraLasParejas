@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     @if (ViewModelPartida.ResultadoComprobado)
     {
-        <meta http-equiv="refresh" name="prueba" content="0.25">
+        <meta http-equiv="refresh" name="prueba" content="0.2">
     }
 </head>
 <body>
@@ -73,10 +73,12 @@
                         <h4 class="modal-title">You Lose</h4>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" id="btnHideModal" class="btn btn-primary button button4" value="1" name="volverAJugarONo">Try again</button>
-                        <button type="button" id="btnHideModal" class="btn btn-primary button button4" value="3" name="volverAJugarONo">
-                            Exit
-                        </button>
+                        <form method="post">
+                            <button type="submit" id="btnHideModal" class="btn btn-primary button button4" value="1" name="volverAJugarONo">Try again</button>
+                            <button type="submit" id="btnHideModal" class="btn btn-primary button button4" value="3" name="volverAJugarONo">
+                                Exit
+                            </button>
+                         </form>
                     </div>
                 </div>
             </div>
@@ -117,7 +119,6 @@
                 });
                 $("#btnSave").click(function save() {
                     $("#victory").modal('hide');
-                    var guardado = 1;
                 });
 
                 $("#btnHideModal").click(function () {

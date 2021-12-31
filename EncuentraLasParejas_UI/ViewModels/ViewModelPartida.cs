@@ -56,7 +56,7 @@ namespace EncuentraLasParejas_UI.ViewModels
             get { return intentos; }
             set {
                 intentos = value;
-                if (intentos == -1000)
+                if (intentos == 0)
                 {
                     imprimirResultado(false);
                 }
@@ -66,7 +66,7 @@ namespace EncuentraLasParejas_UI.ViewModels
         #region constructor
         public ViewModelPartida() {
             puntuacion = 0;
-            intentos = 6;
+            intentos = 9;
             numeroCartasVolteadas = 0;
             llenarListaDeCartas();
             Tiempo = "0";

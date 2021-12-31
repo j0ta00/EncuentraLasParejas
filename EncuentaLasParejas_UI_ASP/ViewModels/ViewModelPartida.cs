@@ -21,7 +21,7 @@ namespace EncuentaLasParejas_UI_ASP.ViewModels
         public static int IdCartaActual { get; set; }
         public static int Intentos { get { return intentos; } set {
                 intentos = value;
-                if (intentos < -100){
+                if (intentos == 0){
                     Resultado = 1;
                 }
             } }
@@ -39,7 +39,7 @@ namespace EncuentaLasParejas_UI_ASP.ViewModels
             if (ListaCartas is null)
             {
                 llenarListaDeCartas();
-                Intentos = 6;
+                Intentos = 9;
                 Puntuacion = 0;
                 IdCartaActual = 0;
                 Tiempo = 0;
