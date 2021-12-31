@@ -247,7 +247,7 @@ namespace EncuentraLasParejas_UI.ViewModels
         /// </summary>
         private void volverAJugar(){
             this.Puntuacion=0;
-            this.Intentos=6;
+            this.Intentos=9;
             numeroCartasVolteadas = 0;
             ListaCartas.ToList().ForEach(carta=>carta.Descubierta=false);
             Timer.Start();
