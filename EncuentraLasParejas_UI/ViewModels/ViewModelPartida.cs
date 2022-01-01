@@ -26,7 +26,7 @@ namespace EncuentraLasParejas_UI.ViewModels
         public DelegateCommand Clicar { get; set; }
         public DelegateCommand VolverAEmpezar { get; set; }
         public DelegateCommand VolverAMenu { get; set; }
-        private int numeroCartasVolteadas;//esto es un booleano pero no se me ocurria ningun nombre de booleano logico
+        private bool numeroMaximoCartasVolteadas;
         private Carta cartaSeleccionada;
         public string Tiempo { get; set; }
         public Carta CartaSeleccionada { get { return cartaSeleccionada; } set {
@@ -67,7 +67,7 @@ namespace EncuentraLasParejas_UI.ViewModels
         public ViewModelPartida() {
             puntuacion = 0;
             intentos = 9;
-            numeroCartasVolteadas = 0;
+            numeroMaximoCartasVolteadas = false;
             llenarListaDeCartas();
             Tiempo = "0";
             Timer.Interval = new TimeSpan(0, 0, 1);
@@ -155,14 +155,14 @@ namespace EncuentraLasParejas_UI.ViewModels
             if (!cartaSeleccionada.Descubierta)
             {
                 cartaSeleccionada.Descubierta = true;
-                if (numeroCartasVolteadas == 1)
+                if (numeroMaximoCartasVolteadas)
                 {
                     comprobarCartas();
-                    numeroCartasVolteadas = 0;
+                    numeroMaximoCartasVolteadas = false;
                 }
                 else {
                     CartaPrevia = cartaSeleccionada;
-                    ++numeroCartasVolteadas; }
+                    numeroMaximoCartasVolteadas=true; }
             }
         }
 
@@ -248,7 +248,7 @@ namespace EncuentraLasParejas_UI.ViewModels
         private void volverAJugar(){
             this.Puntuacion=0;
             this.Intentos=9;
-            numeroCartasVolteadas = 0;
+            numeroMaximoCartasVolteadas = false;
             ListaCartas.ToList().ForEach(carta=>carta.Descubierta=false);
             Timer.Start();
             tiempo=0;
