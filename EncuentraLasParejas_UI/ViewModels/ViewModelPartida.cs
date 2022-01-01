@@ -221,7 +221,7 @@ namespace EncuentraLasParejas_UI.ViewModels
         private void guardarResultado(string nombreJugador){
             try
             {
-                GestoraPuntuacion_BL.actualizarOInsertar(new clsPuntuacion(nombreJugador, Tiempo));
+                GestoraPuntuacion_BL.actualizarOInsertar(new clsPuntuacion(nombreJugador,TimeSpan.Parse(Tiempo).TotalSeconds.ToString()));
             }
             catch (SqlException){
                 ViewModelMainPage.mostrarContentDialogErrorSql();//esto es básicamente para no tener dos veces el mismo método, podría haberlo metido en una clase utilidades o algo así pero siendo un único método me parecía un poco innecesario

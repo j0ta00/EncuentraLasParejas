@@ -24,7 +24,7 @@ namespace EncuentraLasParejas_DAL.Gestora
                 resultado = myUtilsQuery.QueryActualizarOInsertarPuntuacion(query, puntuacion);
             }
             else {
-                if (tiempoAlmacenado.TotalSeconds > TimeSpan.Parse(puntuacion.Tiempo).TotalSeconds)//tengo que hacer este parseo porque si no al parsear de string a int me daba un fallo de formato
+                if (tiempoAlmacenado.TotalSeconds > int.Parse(puntuacion.Tiempo))//tengo que hacer este parseo porque si no al parsear de string a int me daba un fallo de formato
                 {
                     query = "update puntuacion set nombreJugador=@nombreJugador,tiempoRealizado=@tiempoRealizado where nombreJugador=@nombreJugador";
                     resultado = myUtilsQuery.QueryActualizarOInsertarPuntuacion(query, puntuacion);

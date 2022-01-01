@@ -67,7 +67,7 @@ namespace EncuentraLasParejas_DAL.UtilsQuery
         /// <returns>int filas afectadas</returns>
         public int QueryActualizarOInsertarPuntuacion(String query,clsPuntuacion puntuacion){
             myCommand.Parameters.Add("@nombreJugador",System.Data.SqlDbType.VarChar).Value=puntuacion.NombreJugador;
-            myCommand.Parameters.Add("@tiempoRealizado", System.Data.SqlDbType.Time).Value = puntuacion.Tiempo;
+            myCommand.Parameters.Add("@tiempoRealizado", System.Data.SqlDbType.Time).Value = TimeSpan.FromSeconds(int.Parse(puntuacion.Tiempo)).ToString();
             myCommand.CommandText =query;
             myCommand.Connection = myConnection;
             return myCommand.ExecuteNonQuery();
