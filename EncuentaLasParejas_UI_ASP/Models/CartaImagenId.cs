@@ -11,14 +11,10 @@ namespace EncuentaLasParejas_UI_ASP.Models
         public CartaImagenId(Carta carta)
         {
             Imagen=carta.Imagen;
-            Id =carta.Id;
         }
         public CartaImagenId(){
         
         }
         public string Imagen {get; set;}
-        public int Id { get; set; }
-
-
     }
 }
